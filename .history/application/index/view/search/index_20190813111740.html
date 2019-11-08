@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>竞价搜索词报告</title>
+    <link rel="stylesheet" href="/static/assert/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/assert/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/assert/upt.css">
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">数据统计</div>
+        </div>
+
+        {include file="common/left" /}
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div class="container-fuild" style="padding: 0px 50px;">
+                <div class="row">
+                    <div class="col-sm-1">
+                        <div class="layui-input-inline">
+                            <input type="text" style="width: 100%;" class="layui-input" id="time1"
+                                placeholder="yyyy-MM-dd">
+                        </div>
+                    </div>
+                    <!-- <div class="col-sm-2">-----------------------</div> -->
+                    <div class="col-sm-1">
+                        <div class="layui-input-inline">
+                            <input type="text" style="width: 100%;" class="layui-input" id="time2"
+                                placeholder="yyyy-MM-dd">
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <button type="button" class="btn btn-success">查询</button>
+                    </div>
+                    <div class="col-sm-3">
+                        <button onclick="downloads()" class="btn btn-success">下载</button>
+                        <!-- <a class="btn btn-success" href="/search/export">下载</a> -->
+                    </div>
+                    <div class="col-sm-12">
+                        <table class="layui-table layui-form layui-anim" id="tree-table1" style="text-align: center;">
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-footer">
+                <!-- 底部固定区域 -->
+                深圳远大肛肠医院
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/static/assert/jquery-3.3.1.min.js"></script>
+<script src="/static/assert/bootstrap/js/bootstrap.js"></script>
+<script src="/static/assert/layui/layui.js"></script>
+<script src="/static//assert/download.js"></script>
+<script>
+    layui.config({
+        base: '/static/assert/',
+    })
+    layui.use(["laydate", "element", 'treeTable'], function () {
+        var laydate = layui.laydate;
+        var element = layui.element;
+        var treeTable = layui.treeTable
+        laydate.render({
+            elem: '#time1',
+            value: baseMouth()
+        });
+        laydate.render({
+            elem: '#time2',
+            value: lastDay()
+        });
+
+        treeTable.render({
+            elem: '#tree-table1',
+            // url: '/static/assert/table-tree.json',
+            data: {
+                $list
+            },
+            icon_key: 'title',
+            cols: [{
+                key: 'title',
+                title: '词根',
+            }, {
+                key: 'xf',
+                title: '消费',
+            }, {
+                key: 'zx',
+                title: '展现',
+            }, {
+                key: 'click',
+                title: '点击',
+            }, {
+                key: 'fanwen',
+                title: '访问',
+            }, {
+                key: 'duihua',
+                title: '对话',
+            }, {
+                key: 'youxiao',
+                title: '有效',
+            }, {
+                key: 'liulian',
+                title: '留联',
+            }, {
+                key: 'djl',
+                title: '点击率',
+            }, {
+                key: 'ddl',
+                title: '抵达率',
+            }, {
+                key: 'yxzb',
+                title: '有效占比',
+            }, {
+                key: 'llv',
+                title: '留联率',
+            }, {
+                key: 'djcb',
+                title: '点击成本',
+            }, {
+                key: 'dhcb',
+                title: '对话成本',
+            }, {
+                key: 'yxcb',
+                title: '有效成本',
+            }, {
+                key: 'llxb',
+                title: '留联成本',
+            }, ]
+        });
+
+    })
+
+
+
+
+    function baseMouth() {
+        var timer = new Date().toISOString().split('T')[0]
+        timer = timer.substr(0, timer.length - 2) + '01'
+        return timer
+    }
+
+    function lastDay() {
+        var day1 = new Date();
+        day1.setTime(day1.getTime() - 24 * 60 * 60 * 1000);
+        var s1 = day1.getFullYear() + "-" + (day1.getMonth() + 1) + "-" + day1.getDate();
+        return s1
+    }
+
+    function downloads() {
+        $.ajax({
+            type: "post",
+            url: "/search/export",
+            data: {
+                lastDay: $('#time1').val(),
+                newDay: $('#time2').val()
+            },
+            // dataType: "json",
+            success: download.bind(true, "xlsx", "")
+        });
+    }
+
+
+    function exportData() {
+        var index = layer.load(2);
+        var showName = "";
+        $.ajax({
+            url: visuUrls + "/search/export",
+            type: "post",
+            async: false,
+            data: {
+                "tableName": tableName
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    showName = data.data;
+                }
+            },
+            error: function () {
+
+            }
+        })
+        // 判断下载文件名
+        if (showName == "") {
+            layer.close(index);
+            layer.msg('下载失败', {
+                icon: 2
+            });
+            return;
+        }
+        var url = visuUrls + "/download/v1/table-data?tableName=" + tableName + "&flag=" + flag + "&name=" + $(
+            "input[name='name']").val();
+        var xhr = getHttpObj(); //创建新的XHR对象
+        xhr.open('post', url, true); //指定获取数据的方式和url地址
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8')
+        xhr.responseType = 'blob'; //以blob的形式接收数据，一般文件内容比较大
+        xhr.onload = function (e) {
+            var blob = this.response; //Blob数据
+            if (this.status == 200) {
+                if (blob && blob.size > 0) {
+                    console.log(xhr.response)
+                    var blob = new Blob([xhr.response], {
+                        type: 'Files'
+                    });
+                    var csvUrl = URL.createObjectURL(blob);
+                    var link = document.createElement('a');
+                    link.href = csvUrl;
+                    // 下载xlsx文件
+                    link.download = showName + ".xlsx";
+                    link.click();
+                }
+                layer.close(index);
+            } else {
+                layer.close(index);
+                layer.msg('下载失败', {
+                    icon: 2
+                });
+            }
+        };
+        xhr.send(null) //post请求传的参数
+    }
+
+    function getHttpObj() {
+        var xmlhttp = null;
+        if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        } else { // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        return xmlhttp;
+    }
+    -- -- -- -- -- -- -- -- -- -- -
+    版权声明： 本文为CSDN博主「 myCat、」 的原创文章， 遵循CC 4.0 by - sa版权协议， 转载请附上原文出处链接及本声明。
+    原文链接： https: //blog.csdn.net/WYA1993/article/details/82714767
+</script>
+
+</html>

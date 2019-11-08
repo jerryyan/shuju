@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文件管理</title>
+    <link rel="stylesheet" href="/static/assert/layui/css/layui.css">
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">文件管理</div>
+            <!-- <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item layui-this"><a href="/static/index.html">首页</a></li>
+                <li class="layui-nav-item"><a href="/static/index_2.html">文件管理</a></li>
+                <li class="layui-nav-item"><a href="/static/index_3.html">添加账号</a></li>
+            </ul> -->
+        </div>
+
+        {include file="common/left" /}
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div style="padding: 15px;">
+                <div class="layui-form">
+                    <div class="layui-form-item">
+                        <!-- <label class="layui-form-label">单行输入框</label> -->
+                        <div class="layui-input-block" style="display: flex;margin-left: 0 !important;">
+                            <input type="text" name="title" placeholder="请输入标题" class="layui-input suosoustr"
+                                style="width: 300px;">
+                            <button type="button" class="layui-btn strs" onclick="asdfgh()">搜索</button>
+                        </div>
+                    </div>
+                    <table class="layui-table" id="layui-table">
+                        <colgroup>
+                            <col width="200">
+                            <col width="600">
+                            <col width="380">
+                            <col>
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>文件名</th>
+                                <th>上传时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        {volist name="data" id="vo"}
+                        <tbody class="addTab">
+                            <tr>
+                                <td>{$vo.id}</td>
+                                <td>{$vo.name}</td>
+                                <td>{$vo.atime}</td>
+                                <td><button type="button" onclick="deleted({$vo.id})"
+                                        class="layui-btn layui-btn-sm layui-btn-danger">删除</button></td>
+                            </tr>
+                        </tbody>
+                        {/volist}
+
+                    </table>
+                    <div id="page"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            深圳远大肛肠医院
+        </div>
+    </div>
+</body>
+<script src="/static/assert/layui/layui.js"></script>
+<script src="/static/assert/template-web.js"></script>
+<script>
+    layui.use(['upload', 'layer', 'laypage', 'form', 'element'], function () {
+        var element = layui.element;
+        var form = layui.form;
+        var $ = layui.jquery;
+        upload = layui.upload
+        var laypage = layui.laypage
+        var current = NaN
+
+
+        var idsp = 1
+        function asdfgh() {
+            if
+            var str = $('.suosoustr').val()
+            location.href = `/index/swtFile?p=${idsp}&str=${str}`
+        }
+        asdfgh()
+        laypage.render({
+            elem: 'page',
+            limit: {$limit},
+            curr: {$p},
+            count: {$count},
+            jump: function (obj, first) {
+                if (!first) {
+                    idsp=obj.curr
+                    current = obj.curr
+                    location.href = `/index/swtFile?p=${obj.curr}`
+                }
+            }
+        });
+    })
+
+    function deleted(ids) {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        $.ajax({
+            type: "post",
+            url: "/index/del",
+            data: {
+                id: ids
+            },
+            dataType: "json",
+            success: function (res) {
+                // console.log(response);
+                if (res.code == 1) {
+                    layer.msg(res.msg);
+                    location.reload();
+                }
+            }
+        });
+    }
+</script>
+
+</html>

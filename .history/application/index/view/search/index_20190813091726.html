@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>竞价搜索词报告</title>
+    <link rel="stylesheet" href="/static/assert/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/assert/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/assert/upt.css">
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">数据统计</div>
+        </div>
+
+        {include file="common/left" /}
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div class="container-fuild">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="time1" placeholder="yyyy-MM-dd">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="time2" placeholder="yyyy-MM-dd">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <button type="button" class="btn btn-success">查询</button>
+                    </div>
+                    <div class="col-sm-3">
+                        <button type="button" onclick="downloads()" class="btn btn-success">下载</button>
+                    </div>
+                    <div class="col-sm-12">
+                        <table class="layui-table layui-form layui-anim" id="tree-table1"
+                            style="display: flex;text-align: center">
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-footer">
+                <!-- 底部固定区域 -->
+                深圳远大肛肠医院
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/static/assert/jquery-3.3.1.min.js"></script>
+<script src="/static/assert/bootstrap/js/bootstrap.js"></script>
+<script src="/static/assert/layui/layui.js"></script>
+<script src="../../../../public/static//assert/download.js"></script>
+<script>
+    layui.config({
+        base: '/static/assert/',
+    })
+    layui.use(["laydate", "element", 'treeTable'], function () {
+        var laydate = layui.laydate;
+        var element = layui.element;
+        var treeTable = layui.treeTable
+        laydate.render({
+            elem: '#time1',
+            value: baseMouth()
+        });
+        laydate.render({
+            elem: '#time2',
+            value: lastDay()
+        });
+
+        treeTable.render({
+            elem: '#tree-table1',
+            // url: '/static/assert/table-tree.json',
+            data: {$list},
+            icon_key: 'title',
+            cols: [{
+                key: 'title',
+                title: '词根',
+            }, {
+                key: 'xf',
+                title: '消费',
+            }, {
+                key: 'zx',
+                title: '展现',
+            }, {
+                key: 'click',
+                title: '点击',
+            }, {
+                key: 'fanwen',
+                title: '访问',
+            }, {
+                key: 'duihua',
+                title: '对话',
+            }, {
+                key: 'youxiao',
+                title: '有效',
+            }, {
+                key: 'liulian',
+                title: '留联',
+            }, {
+                key: 'djl',
+                title: '点击率',
+            }, {
+                key: 'ddl',
+                title: '抵达率',
+            }, {
+                key: 'yxzb',
+                title: '有效占比',
+            }, {
+                key: 'llv',
+                title: '留联率',
+            }, {
+                key: 'djcb',
+                title: '点击成本',
+            }, {
+                key: 'dhcb',
+                title: '对话成本',
+            }, {
+                key: 'yxcb',
+                title: '有效成本',
+            }, {
+                key: 'llxb',
+                title: '留联成本',
+            }, ]
+        });
+
+    })
+
+
+
+
+    function baseMouth() {
+        var timer = new Date().toISOString().split('T')[0]
+        timer = timer.substr(0, timer.length - 2) + '01'
+        return timer
+    }
+
+    function lastDay() {
+        var day1 = new Date();
+        day1.setTime(day1.getTime() - 24 * 60 * 60 * 1000);
+        var s1 = day1.getFullYear() + "-" + (day1.getMonth() + 1) + "-" + day1.getDate();
+        return s1
+    }
+
+    function downloads() {
+        $.ajax({
+            url: "",
+            success: download.bind(true, "text/html", "")
+        });
+    }
+</script>
+
+</html>

@@ -1,0 +1,17 @@
+a{
+    text-decoration: none !important;
+}
+
+/* 更多菜单样式 */
+.box{
+    width: 120px;
+    height: 20px;
+    padding: 0 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    border: 1px solid #cccccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    }

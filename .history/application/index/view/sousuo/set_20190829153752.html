@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>数据处理</title>
+    <link rel="stylesheet" href="/static/assert/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/assert/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/assert/upt.css">
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">数据统计</div>
+        </div>
+        {include file="common/left" /}
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div class="container">
+
+
+                <div class="row" style="margin-bottom: 5px;margin-top: 15px;">
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="time1" placeholder="yyyy-MM-dd">
+                    </div>
+                    <button type="button" class="btn btn-success abc">处理已上传商务通和竞价数据</button>
+                    <!-- <div class="col-sm-3" style="margin-bottom: 5px;margin-top: 15px;"><input type="text"
+                            style="text-align: center;" class="layui-input" id="time1" placeholder="yyyy-MM">
+                    </div>
+                    <div class="col-sm-3" style="margin-bottom: 5px;margin-top: 15px;">
+                        <button type="button" id="chaxun" class="btn btn-success">查询</button>
+                    </div> -->
+                    <div class="col-sm-12" style="display: flex;">
+                        <table class="table table-bordered table-sm">
+                            <thead style="text-align: center">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>类型</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody style="text-align: center" class="tbd">
+                                <tr>
+                                    <td>第1周</td>
+                                    <td>第2周</td>
+                                    <td><button type="button" onclick="deleted(id)"
+                                            class="layui-btn layui-btn-primary layui-btn-xs">删除</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="fenye"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-footer">
+                <!-- 底部固定区域 -->
+                深圳远大肛肠医院
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/html" id="tab">
+    {{each list value}}
+    <tr>
+        <td>{{value.id}}</td>
+        <td>{{value.stime}}</td>
+        <td>{{value.atime}}</td>
+    </tr>
+    {{/each}}
+</script>
+<script src="/static/assert/jquery-3.3.1.min.js"></script>
+<script src="/static/assert/bootstrap/js/bootstrap.js"></script>
+<script src="/static/assert/template-web.js"></script>
+<script src="/static/assert/layui/layui.js"></script>
+<script>
+    layui.use(["laydate", 'laypage', 'element', 'layer'], function () {
+        var laydate = layui.laydate;
+        var element = layui.element;
+        var laypage = layui.laypage;
+        layer = layui.layer;
+        laydate.render({
+            elem: '#time1',
+            type: 'date',
+            value: new Date()
+        });
+
+        $('.abc').click(function () {
+            layer.open({
+                type: 3,
+            });
+            $.ajax({
+                type: "post",
+                url: "/sousuo/swtData",
+                data: {
+                    timer: $('#time1').val()
+                },
+                dataType: "json",
+                success: function (res) {
+                    layer.closeAll();
+                    layer.msg(res.msg);
+
+                }
+            });
+        })
+    })
+    select(1)
+    $('#chaxun').click(function () {
+        select(1)
+    })
+
+
+    function deleted(id) {
+        $.ajax({
+            type: "get",
+            url: "url",
+            data: {
+                id: id
+            },
+            dataType: "json",
+            success: function (response) {
+                location.reload()
+            }
+        });
+    }
+
+    function select(pageIndex) {
+        $.ajax({
+            type: "post",
+            url: "/sousuo/setinfo",
+            data: {
+              //  timer: $('#time1').val(),
+                pageIndex: pageIndex,
+                pageSize: 10,
+            },
+            dataType: "json",
+            success: function (res) {
+                var html = template(tab, {
+                    list: res.data
+                })
+                console.log();
+                
+                $('.tbd').html(html)
+                laypage.render({
+                    elem: 'fenye',
+                    count: res.count,
+                    jump: function (obj, first) {
+                        if (!first) {
+                            select(obj.curr)
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function baseMouth() {
+        var timer = new Date().toISOString().split('T')[0]
+        timer = timer.substr(0, timer.length - 3)
+        return timer
+    }
+</script>
+
+</html>

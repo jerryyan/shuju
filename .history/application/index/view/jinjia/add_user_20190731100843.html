@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文件管理</title>
+    <link rel="stylesheet" href="/static/assert/layui/css/layui.css">
+    <style>
+        .layui-form-label {
+            width: 100px;
+        }
+
+        .layui-input-block {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <fieldset class="layui-elem-field layui-field-title"
+        style="margin-top: 20px;margin-left: -1160px;text-align: center;">
+        <legend>肛肠账号</legend>
+    </fieldset> -->
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">文件管理</div>
+            <!-- <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item layui-this"><a href="/static/index.html">首页</a></li>
+                <li class="layui-nav-item"><a href="/static/index_2.html">文件管理</a></li>
+                <li class="layui-nav-item"><a href="/static/index_3.html">添加账号</a></li>
+            </ul> -->
+        </div>
+
+        {include file="common/left" /}
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div style="padding: 15px;">
+                <div class="layui-form">
+                    <table class="layui-table" style="width: 1238px;margin:30px auto;">
+                        <colgroup>
+                            <col width="128">
+                            <col width="260">
+                            <col width="250">
+                            <col width="300">
+                            <col>
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>账户标记</th>
+                                <th>账户名</th>
+                                <th>项目名</th>
+                                <th>删除账号</th>
+                            </tr>
+                        </thead>
+                        <tbody class="addTab1">
+                            <tr>
+                                <td>贤心</td>
+                                <td>汉族</td>
+                                <td>1989-10-14</td>
+                                <td>人生似修行</td>
+                                <td>人生似修行</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="display: flex;width: 1200px;margin-left: 168px;">
+                        <label class="layui-form-label">账号标记</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" required lay-verify="required" placeholder="请输入账号标记"
+                                autocomplete="off" class="layui-input biaoji">
+                        </div>
+                        <label class="layui-form-label">账号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" required lay-verify="required" placeholder="请输入账号"
+                                autocomplete="off" class="layui-input zhanghao">
+                        </div>
+                        <label class="layui-form-label">项目名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" required lay-verify="required" placeholder="请输入项目名"
+                                autocomplete="off" class="layui-input xiangmu">
+                        </div>
+                        <button type="button" style="margin-left: 100px;" id="sub" class="layui-btn">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            深圳远大肛肠医院
+        </div>
+    </div>
+</body>
+<script type="text/html">
+    {{each list value}}
+    <tr>
+        <td>{{value.}}</td>
+        <td>{{value.}}</td>
+        <td>{{value.}}</td>
+        <td><button type="button" onclick="deleted({{value.}})"
+                class="layui-btn layui-btn-sm layui-btn-danger">删除</button></td>
+    </tr>
+    {{/each}}
+</script>
+<script src="/static/assert/layui/layui.js"></script>
+<script src="/static/assert/template-web.js"></script>
+<script>
+    layui.use(['upload', 'element'], function () {
+        var element = layui.element;
+        var $ = layui.jquery;
+        upload = layui.upload;
+
+        $('#sub').click(function () {
+            $.ajax({
+                type: "post",
+                url: "/jinjia/addUser",
+                data: {
+                    biaoji: $('.biaoji').val(),
+                    zhanghao: $('zhanghao').val(),
+                    xiangmu: $('.xiangmu').val()
+                },
+                dataType: "dataType",
+                success: function (response) {
+                    if(response.code==1){
+                    layer.msg(response.msg);
+                    location.reload();
+                }
+                }
+            });
+        })
+    })
+
+    function deleted(ids) {
+        $.ajax({
+            type: "method",
+            url: "url",
+            data: "data",
+            dataType: "dataType",
+            success: function (response) {
+
+            }
+        });
+    }
+</script>
+
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文件管理</title>
+    <link rel="stylesheet" href="/public/static/assert/layui/css/layui.css">
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">文件管理</div>
+            <!-- <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item layui-this"><a href="/public/static/index.html">首页</a></li>
+                <li class="layui-nav-item"><a href="/public/static/index_2.html">文件管理</a></li>
+                <li class="layui-nav-item"><a href="/public/static/index_3.html">添加账号</a></li>
+            </ul> -->
+        </div>
+
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <ul class="layui-nav layui-nav-tree">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a class="" href="javascript:;">商务通模块</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="/public/static/shangwutong_up.html">文件上传</a></dd>
+                            <dd><a style="color:#ffffff" href="/public/static/shangwu_guanli.html">文件管理</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">竞价数据模块</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="/public/static/jinjia_up.html">文件上传</a></dd>
+                            <dd><a href="/public/static/jinjia_guanli.html">文件管理</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">添加账号模块</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="/public/static/addUser_GC.html">肛肠账号</a></dd>
+                            <dd><a href="/public/static/addUser_WC.html">胃肠账号</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div style="padding: 15px;">
+                <div class="layui-form">
+                    <table class="layui-table" style="width: 1200px;margin: 20px auto;">
+                        <colgroup>
+                            <col width="200">
+                            <col width="400">
+                            <col width="380">
+                            <col>
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>文件名</th>
+                                <th>上传时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="addTab">
+                            <tr>
+                                <td>贤心</td>
+                                <td>汉族</td>
+                                <td>1989-10-14</td>
+                                <td>人生似修行</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            深圳远大肛肠医院
+        </div>
+    </div>
+</body>
+<script type="text/html">
+    {{each list value}}
+    <tr>
+        <td>{{value.}}</td>
+        <td>{{value.}}</td>
+        <td>{{value.}}</td>
+        <td><button type="button" onclick="deleted({{value.}})"
+                class="layui-btn layui-btn-sm layui-btn-danger">删除</button></td>
+    </tr>
+    {{/each}}
+</script>
+<script src="/public/static/assert/layui/layui.js"></script>
+<script src="/public/static/assert/template-web.js"></script>
+<script>
+    layui.use(['upload', 'element'], function () {
+        var element = layui.element;
+        var $ = layui.jquery;
+        upload = layui.upload
+    })
+
+    function deleted(ids) {
+        $.ajax({
+            type: "method",
+            url: "url",
+            data: "data",
+            dataType: "dataType",
+            success: function (response) {
+
+            }
+        });
+    }
+</script>
+
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文件管理</title>
+    <link rel="stylesheet" href="/static/assert/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/assert/bootstrap/css/bootstrap.css">
+    <style>
+        a {
+            text-decoration: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">文件管理</div>
+        </div>
+
+        {include file="common/left" /}
+
+        <div class="layui-body" style="padding: 15px;">
+            <!-- 内容主体区域 -->
+            <table class="layui-table">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <td>项目</td>
+                        <th>词根</th>
+                        <th>搜索词汇总规则</th>
+                        <th>添加时间</th>
+                        <th>编辑</th>
+                    </tr>
+                </thead>
+                {volist name='list' id='vo'}
+                <tbody class="tb">
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.xiangmu}</td>
+                        <td>{$vo.cigen}</td>
+                        <td>{$vo.guize}</td>
+                        <td>{$vo.atime}</td>
+                        <td>
+                            <button type="button" onclick="update({$vo.id})"
+                                class="layui-btn layui-btn-xs">修改</button>&nbsp;&nbsp;
+                            <button type="button" onclick="deleted({$vo.id})" class="layui-btn layui-btn-xs">删除</button>
+                        </td>
+                    </tr>
+                </tbody>
+                {/volist}
+            </table>
+            <div class="layui-row layui-col-space18">
+                <div class="layui-col-md2">
+                    <input type="text" name="title" placeholder="请输入词根" class="layui-input chigen">
+                </div>
+                <div class="layui-col-md2">
+                    <input type="text" placeholder="请输入搜索词汇总规则" class="layui-input guizeOne">
+                </div>
+                <div class="layui-col-md1">
+                    <button id="btn" type="button" class="layui-btn  layui-btn-xs">添加多个词汇规则</button>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-tab" lay-filter="demo" lay-allowclose="true" style="margin: 0;">
+                        <ul class="layui-tab-title" id="uls" style="margin-bottom: 0;">
+                            <!-- <li>用户管理</li> -->
+                        </ul>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <select class="form-control xiangmu">
+                        <option value="0">请选择项目</option>
+                        <option>远大肛肠</option>
+                        <option>远大胃肠</option>
+                    </select>
+                </div>
+                <div class="layui-col-md3">
+                    <button id="btn2" type="button" class="layui-btn layui-btn-normal">确定新增</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            深圳远大肛肠医院
+        </div>
+
+    </div>
+</body>
+<script src="/static/assert/layui/layui.js"></script>
+<script src="/static/assert/template-web.js"></script>
+<script type="text/html" id="updateChiTiao">
+    <form class="layui-form" style="padding: 20px;">
+        <input id="id" type="hidden" class="layui-input">
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width:120px;padding:9px 0;;">项目名称</label>
+            <div class="layui-input-block" style="margin-left:160px;">
+                <input id="xiangmu" type="text" placeholder="请输入项目名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width:120px">词根</label>
+            <div class="layui-input-block" style="margin-left:160px;">
+                <input id="chigen" type="text" placeholder="请输入词根" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width:120px;padding:9px 0;;">搜索词汇总规则</label>
+            <div class="layui-input-block" style="margin-left:160px;">
+                <input id="guize" type="text" placeholder="请输入新密码" class="layui-input">
+            </div>
+        </div>
+
+    </form>
+</script>
+<script>
+    layui.use(['table', 'element', 'form'], function () {
+        var element = layui.element
+        var table = layui.table
+        var $ = layui.jquery
+
+        $('#btn').click(function () {
+            if ($('.guizeOne').val() == '') {
+                layer.msg('搜索词汇不能为空!');
+                return
+            }
+            $('#uls').append(`<li>${$('.guizeOne').val()}</li>`);
+            element.init()
+            $('.guizeOne').val('')
+        })
+
+        $('#btn2').click(function () {
+            var guizeOne = []
+            $.each($('#uls>li'), function (indexInArray, valueOfElement) {
+                var ccc = $(valueOfElement).text()
+                ccc = ccc.substr(0, ccc.length - 1)
+                guizeOne.push(ccc)
+            });
+            if ($('.chigen').val() == '') {
+                layer.msg('词根不能为空!');
+                return
+            }
+            if (guizeOne.length == 0) {
+                layer.msg('搜索词汇不能为空!');
+                return
+            }
+            if ($('.xiangmu').val() == '0') {
+                layer.msg('项目名不能为空!');
+                return
+            }
+            var data = {
+                cigen: $('.chigen').val(),
+                guizeOne: guizeOne,
+                xiangmu: $('.xiangmu').val()
+            }
+            $.ajax({
+                type: "post",
+                url: "/search/add",
+                data: data,
+                dataType: "json",
+                success: function (res) {
+                    layer.msg(res.msg);
+                    location.reload();
+                }
+            });
+        })
+    })
+
+    function update(val) {
+
+        var $ = layui.jquery
+        var form = layui.form
+        layer.open({
+            type: 1,
+            area: ['50%', '60%'],
+            content: $('#updateChiTiao').html(),
+            btn: ['确定', '取消'],
+            success: function (layero, index) {
+                form.render();
+                $.ajax({
+                    type: "post",
+                    dataType: "JSON",
+                    data: {
+                        id: val
+                    },
+                    url: '/search/editInfo',
+                    success: function (response) {
+                        var asd = JSON.parse(response);
+                        $('#id').val(asd.id)
+                        $('#chigen').val(asd.cigen);
+                        $('#guize').val(asd.guize);
+                        $('#xiangmu').val(asd.xiangmu);
+                    }
+                });
+            },
+            yes: function (layero, index) {
+                var sub = {
+                    id: $('#id').val(),
+                    cigen: $('#chigen').val(),
+                    guize: $('#guize').val(),
+                    xiangmu: $('#xiangmu').val(),
+                }
+                $.ajax({
+                    type: "post",
+                    dataType: "JSON",
+                    data: sub,
+                    url: '/search/edit',
+                    success: function (res) {
+                        layer.msg(res.msg);
+                        location.reload();
+                    }
+                });
+            },
+        });
+
+    }
+
+    function deleted(id) {
+        layer.open({
+            type: 1,
+            content: '<p style="text-align: center">确定删除吗?</p>',
+            btn: ['确定', '取消'],
+            yes: function (index, layero) {
+                $.ajax({
+                    type: "get",
+                    dataType: "JSON",
+                    url: '/search/del',
+                    success: function (response) {
+                        if (response.code == 200) {
+                            layer.msg(`序号Id为${id}的词条删除成功!`);
+                        }
+                    }
+                });
+            },
+        });
+    }
+</script>
+
+</html>
